@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth'
 import authConfig from './auth.config'
 import User from './models/User'
-import connectDB from './lib/db'
+import connectDB, { getUserByNickOrEmail } from './lib/db'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: { strategy: 'jwt' },
@@ -12,21 +12,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
   callbacks: {
     async session({ token, session }) {
-      if (token?.sub && session?.user) {
-        session.user.id = token.sub
+      if (token?.id && session?.user) {
+        session.user.id = token.id
         session.user.name = token.nick || token.name
         session.user.image = token.image
       }
-      console.log({ sessionToken: token, session })
       return session
     },
 
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
+      await connectDB()
+
       if (user) {
-        token.nick = user.nick
-        token.image = user.image
+        const dbUser = await User.findOne({ email: user.email })
+
+        if (dbUser) {
+          token.id = dbUser._id.toString()
+          token.nick = dbUser.nick
+          token.image = dbUser.image
+        }
+      } else if (!token.id) {
+        // Si el token ya existe pero no tiene 'id', buscar en la base de datos
+        const dbUser = await User.findOne({ email: token.email })
+        if (dbUser) {
+          token.id = dbUser._id.toString() // Asegurar que el ID en el token sea el de la base de datos
+        }
       }
-      console.log('USER JWT', user)
+
       return token
     },
 
@@ -54,8 +66,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       if (account?.provider === 'credentials ') {
         const alreadyExistsUser = await User.findOne({ email })
-
-        console.log('ALREADT USER===============', alreadyExistsUser)
 
         if (!alreadyExistsUser) {
           return { error: 'User does not exist.' }

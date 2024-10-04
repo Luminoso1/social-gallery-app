@@ -20,7 +20,11 @@ const UserSchema = new Schema(
     password: {
       type: String
     },
-    image: { type: String, default: '/path' },
+    image: {
+      type: String,
+      default:
+        'https://res.cloudinary.com/dryjzgfzn/image/upload/v1727659027/default_uvyjje.webp'
+    },
 
     emailVerified: {
       type: Date

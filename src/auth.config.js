@@ -20,7 +20,6 @@ export default {
       authorize: async (credentials) => {
         console.log('credentials:', credentials)
         const validateData = LoginSchema.safeParse(credentials)
-        console.log('valid data:', validateData)
         if (!validateData.success) {
           return null
         }
@@ -30,7 +29,6 @@ export default {
         const { nick, password } = validateData.data
 
         const user = await getUserByNick(nick)
-        console.log(user)
 
         if (!user || !user.password) {
           return null

@@ -31,8 +31,8 @@ export const login = async (value) => {
     await signIn('credentials', {
       nick,
       password,
-      redirectTo: '/',
-      callBackUrl: '/'
+      redirectTo: '/home',
+      callBackUrl: '/home'
     })
   } catch (error) {
     if (error instanceof AuthError) {

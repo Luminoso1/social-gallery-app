@@ -6,14 +6,14 @@ import { Button } from '../ui/button'
 export const OAuth = () => {
   const onClick = (provider) => {
     signIn(provider, {
-      redirectTo: '/'
+      redirectTo: '/home'
     })
   }
   return (
     <div className='flex py-2 w-full gap-x-2 items-center'>
       <Button
         variant='outline'
-        className='w-full'
+        className='w-full py-5'
         onClick={() => onClick('google')}
       >
         <svg
@@ -28,7 +28,7 @@ export const OAuth = () => {
 
       <Button
         variant='outline'
-        className='w-full'
+        className='w-full py-5'
         onClick={() => onClick('github')}
       >
         <svg

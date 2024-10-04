@@ -5,7 +5,7 @@ const PUBLIC_ROUTES = ['/login', '/register', '/verify-email']
 
 const DEFAULT_REDIRECT = '/login'
 
-const ROOT = '/'
+const ROOT = '/home'
 
 const { auth } = NextAuth(authConfig)
 
